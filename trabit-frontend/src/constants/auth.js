@@ -1,0 +1,11 @@
+const authConstants = {
+  REGISTER_SUCCESS: 'USER_REGISTER',
+  REGISTER_FAILURE: 'USER_REGISTER_FAILURE',
+
+  LOGIN: 'USERS_LOGIN',
+  LOGIN_SUCCESS: 'USER_LOGIN_SUCCESS',
+
+  LOGOUT: 'USERS_LOGOUT'
+};
+
+export default authConstants;
