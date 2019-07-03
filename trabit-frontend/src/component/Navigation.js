@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { authActions } from '../actions';
 
 const NavigationList = styled.ul`
   display: flex;
@@ -34,23 +35,30 @@ class Navigation extends Component {
     super(props);
     this.state = {}
   }
+
+  onLogout = async (e) => {
+    let result = await authActions.logout();
+    this.props.dispatch(result);
+  }
+
   render() {
     return (
-      <nav>
+      <nav style={{'line-height': '40px', 'font-size': '20px'}}>
         <NavigationList>
             <NavigationItem>
-              <Link to="/">Home</Link>
+              <Link to="/">Trabit</Link>
             </NavigationItem>
+          {this.props.auth.loggedIn &&
             <NavigationItem>
-              <Link to="/dashboard">Dashboard</Link>
-          </NavigationItem>
+            <Link to="/dashboard">Dashboard</Link>
+            </NavigationItem>}
           {this.props.auth.loggedIn &&
             <NavigationItem>
               <Link to="/habits">Habits</Link>
             </NavigationItem>}
           {this.props.auth.loggedIn ?
             < NavigationItem >
-              <Link to="/" >Log out</Link>
+              <Link to="/" onClick={this.onLogout}>Log out</Link>
             </NavigationItem> :
             <NavigationItem>
               <Link to="/login">Login</Link>

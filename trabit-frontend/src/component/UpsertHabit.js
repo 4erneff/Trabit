@@ -27,14 +27,15 @@ class UpsertHabit extends Component {
     super(props);
     let isEdit = false;
     let habit = {
-      progressType: 0,
-      progressInterval: 0,
+      type: 0,
+      period: 0,
       compare: 0,
     }
     if (this.props.match.params.habitId !== "0") {
-      habit.name = "baba";
-      habit.info = "vnuche";
+      const habitId = this.props.match.params.habitId;
+      habit = this.props.habit.habits.filter((habit) => habit.id == habitId)[0];
       isEdit = true;
+      console.log(habit)
     }
     this.state = {
       habit,
@@ -65,8 +66,8 @@ class UpsertHabit extends Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     const action = this.state.isEdit ? habitActions.edit : habitActions.create;
-    let result = await action({ 'name': "habit vnuche", 'id': 1 });
-    if (result.type.contains("SUCCESS")) {
+    let result = await action(this.state.habit);
+    if (result.type.indexOf("SUCCESS") != -1) {
       this.props.dispatch(result);
       this.props.history.push('/habits');
     } else {
@@ -100,8 +101,8 @@ class UpsertHabit extends Component {
           margin="normal"
           variant="filled"
           onChange={this.handleChange}
-          name="info"
-          value={this.state.habit.info}
+          name="desc"
+          value={this.state.habit.desc}
           InputLabelProps={{
             shrink: true,
           }}
@@ -121,10 +122,10 @@ class UpsertHabit extends Component {
         <FormControl fullWidth classKey="marginDense">
         <Select
           disabled={this.state.isEdit}
-          value={this.state.habit.progressType}
+          value={this.state.habit.type}
           onChange={this.handleChange}
           inputProps={{
-            name: 'progressType',
+            name: 'type',
           }}
           >
           <MenuItem value={0}>Select progress type</MenuItem>
@@ -157,7 +158,20 @@ class UpsertHabit extends Component {
           variant="filled"
           name="target"
           onChange={this.handleChange}
-          value={this.state.habit.targetValue}
+          value={this.state.habit.target}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          label="Units"
+          style={{ margin: 8 }}
+          fullWidth
+          margin="normal"
+          variant="filled"
+          name="unit"
+          onChange={this.handleChange}
+          value={this.state.habit.unit}
           InputLabelProps={{
             shrink: true,
           }}
@@ -165,17 +179,17 @@ class UpsertHabit extends Component {
         <SelectWrapper>
         <FormControl fullWidth classKey="marginDense">
         <Select
-          value={this.state.habit.progressInterval}
+          value={this.state.habit.period}
           onChange={this.handleChange}
           inputProps={{
-            name: 'progressInterval',
+            name: 'period',
           }}
           >
           <MenuItem value={0}>Select period</MenuItem>
           <MenuItem value={1}>Daily</MenuItem>
           <MenuItem value={2}>Weekly</MenuItem>
-          <MenuItem value={2}>Monthly</MenuItem>
-          <MenuItem value={2}>Annually</MenuItem>
+          <MenuItem value={3}>Monthly</MenuItem>
+          <MenuItem value={4}>Annually</MenuItem>
         </Select>
         </FormControl>
         </SelectWrapper>
@@ -187,4 +201,7 @@ class UpsertHabit extends Component {
   }
 }
 
-export default connect()(UpsertHabit)
+const mapStateToProps = state => ({
+  habit: state.habit,
+})
+export default connect(mapStateToProps)(UpsertHabit)

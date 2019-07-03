@@ -3,13 +3,16 @@ import { authService } from '../services';
 
 export const authActions = {
   login,
-  register
+  register,
+  logout
 };
 
 async function login(username, password) {
   try {
-    let user = await authService.login(username, password)
-    return success(user);
+    let user = await authService.login(username, password);
+    if (user) {
+      return success(user);
+    }
   } catch(err) {
     return failure(err);
   }
@@ -20,7 +23,7 @@ async function login(username, password) {
 
 async function register(username, password, email) {
   try {
-    let user = await authService.register(username, password)
+    let user = await authService.register(username, password, email)
     return success(user);
   } catch(err) {
     return failure(err);
@@ -28,4 +31,9 @@ async function register(username, password, email) {
 
   function success(user) { return { type: authConstants.REGISTER_SUCCESS, user } }
   function failure(error) { return { type: authConstants.REGISTER_FAILURE, error } }
+}
+
+async function logout() {
+  authService.logout();
+  return {type: authConstants.LOGOUT}
 }

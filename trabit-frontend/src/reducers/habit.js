@@ -5,6 +5,7 @@ let initialState = {
 }
 
 const habit = (state = initialState, action) => {
+  let newHabits = [];
   switch (action.type) {
     case habitConstants.RETRIEVE_ALL_SUCCESS:
       return {
@@ -15,8 +16,8 @@ const habit = (state = initialState, action) => {
         habits: [...state.habits, action.habit]
       }
     case habitConstants.EDIT_SUCCESS:
-      let newHabits = state.habits.map((habit) => {
-        if (habit.id === action.habit.id) {
+      newHabits = state.habits.map((habit) => {
+        if (habit.id == action.habit.id) {
           return action.habit;
         }
         return habit;

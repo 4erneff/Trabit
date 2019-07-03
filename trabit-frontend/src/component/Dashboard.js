@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import AddProgress from './AddProgress'
 import Results from './Results'
 
-const LayoutWrapper = styled.form`
+const LayoutWrapper = styled.div`
   width: 70%;
   height: 1300px;
   padding: 40px;

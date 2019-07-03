@@ -22,7 +22,7 @@ async function retrieveAll() {
 
 async function create(habit) {
   try {
-    await habitService.create(habit)
+    habit = await habitService.create(habit)
     return success(habit);
   } catch(err) {
     return failure(err);
@@ -34,7 +34,7 @@ async function create(habit) {
 
 async function edit(habit) {
   try {
-    await habitService.edit(habit)
+    habit = await habitService.edit(habit)
     return success(habit);
   } catch(err) {
     return failure(err);

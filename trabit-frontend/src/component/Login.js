@@ -1,38 +1,44 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import styled, { ThemeProvider } from 'styled-components';
-import TextInputField from './common/TextInputField';
-import PrimaryButton from './common/Button';
 import authConsts from '../constants/auth';
 import { authActions } from '../actions';
-
-const LoginForm = styled.form`
-  max-width: 420px;
-  padding: 24px;
-  margin: 0 auto;
-  box-shadow: 0px 2px 40px 0 rgba(0, 0, 0, 0.1);
-`;
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
 
 class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+
+    }
   }
 
   handleChange = (e) => {
-    const { name, value} = e.target;
-    this.setState({ [name]: value });
+    const { name, value } = e.target;
+    console.log(name, value)
+    let newState = { ...this.state };
+    newState[name] = value;
+    this.setState(newState);
   }
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    let username = this.state.username;
+
+    let username = this.state.name;
     let password = this.state.password;
 
     let result = await authActions.login(username, password, this.props.history.push);
+    console.log(result)
     if (result.type === authConsts.LOGIN_SUCCESS) {
       this.props.dispatch(result);
-      this.props.history.push('/');
+      this.props.history.push('/dashboard');
     } else {
       this.setState({error: result.error.message})
     }
@@ -40,28 +46,59 @@ class Login extends Component {
 
   render() {
     return (
-      <LoginForm onSubmit={this.handleSubmit}>
-        <TextInputField
-          label="Username"
-          name="username"
-          onChange={this.handleChange}
-          value={this.state.username}
-        />
-        <TextInputField
-          label="Password"
-          onChange={this.handleChange}
-          name="password"
-          type="password"
-          value={this.state.password}
-        />
-        <PrimaryButton disabled={this.state.loading}>
-          Login
-        </PrimaryButton>
-        {this.state.error &&
-          // <SubtleErrorBox label={this.state.error} />
-          <p>{this.state.error}</p>
-        }
-      </LoginForm>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div >
+          <Avatar >
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <form  noValidate onSubmit={this.handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="name"
+              onChange={this.handleChange}
+              value={this.state.username}
+              label="Username"
+              name="name"
+              autoFocus
+              inputProps={{
+                autocomplete: "off",
+              }}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              onChange={this.handleChange}
+              value={this.state.password}
+              autoComplete="current-password"
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+            >
+              Sign In
+            </Button>
+          </form>
+        </div>
+      </Container>
     );
   }
 }

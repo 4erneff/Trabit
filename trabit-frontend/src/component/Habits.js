@@ -17,6 +17,7 @@ import AddIcon from '@material-ui/icons/Add';
 import habitConstants from '../constants/habit';
 import styled from 'styled-components';
 import { habitActions } from '../actions';
+import './Habits.css';
 
 const AddBtn = styled.div`
   float: right;
@@ -36,10 +37,7 @@ class HabitList extends Component{
   constructor(props) {
     super(props);
     this.state = {
-      'habits': [
-        { 'name': "habit 1", 'id': 1 },
-        { 'name': "habit 2", 'id': 2 },
-      ],
+      'habits': [],
       'open': false,
     }
   }
@@ -76,7 +74,7 @@ class HabitList extends Component{
       <Grid item xs={12} md={6}>
         <div>
           <List>
-            {this.props.habit.habits.map(habit =>
+            {this.props.habit.habits && this.props.habit.habits.map(habit =>
               <HabitListItem habit={habit} onEdit={this.onEdit} onDelete={this.onDelete}/>
              )}
           </List>

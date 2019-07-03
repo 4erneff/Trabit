@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import styled from 'styled-components';
+import { executionService } from '../services';
 import moment from 'moment';
 import Paper from '@material-ui/core/Paper';
 
@@ -29,14 +30,26 @@ const rows = [
 class Results extends Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
   }
+
+  componentDidMount = async () => {
+    let progress = await executionService.getProgress();
+    this.setState({ progress });
+  };
+
+  getColor = (v) => {
+    if (v > 50) return "green";
+    if (v < 30) return "red";
+    return "black";
+  }
+
   render() {
     return (
       <div>
       <LineBreak />
       <Typography variant="h5">
-        Your progress for the last week
+        Your progress pas week progress
       </Typography>
       <LineBreak />
       <Paper>
@@ -50,15 +63,18 @@ class Results extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
+          {this.state.progress && this.state.progress.map(row => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
-              <TableCell align="right" style={{color:'green'}}>{row.percent}</TableCell>
-              <TableCell align="right">{row.percent}</TableCell>
-              <TableCell align="right">{row.percent}</TableCell>
-              <TableCell align="right">{row.percent}</TableCell>
+              <TableCell align="right" style={{ color: this.getColor(row.percent[0])}}>{row.percent[0] + '%'}</TableCell>
+              <TableCell align="right" style={{ color: this.getColor(row.percent[1])}}>{row.percent[1] + '%'}</TableCell>
+              <TableCell align="right" style={{ color: this.getColor(row.percent[2])}}>{row.percent[2] + '%'}</TableCell>
+              <TableCell align="right" style={{ color: this.getColor(row.percent[3])}}>{row.percent[3] + '%'}</TableCell>
+              <TableCell align="right" style={{ color: this.getColor(row.percent[4])}}>{row.percent[4] + '%'}</TableCell>
+              <TableCell align="right" style={{ color: this.getColor(row.percent[5])}}>{row.percent[5] + '%'}</TableCell>
+              <TableCell align="right" style={{ color: this.getColor(row.percent[6])}}>{row.percent[6] + '%'}</TableCell>
             </TableRow>
           ))}
         </TableBody>

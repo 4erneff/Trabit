@@ -1,35 +1,49 @@
-async function login(username, password) {
+async function login(name, password) {
   const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ name, password })
   };
-  // TODO: call backend
-  if (username === 'bb' && password === 'bb'){
-    return { 'name': 'ivobb' }
-  } else {
-    throw new Error("Wrong credentials");
+  var res = await fetch(`http://localhost:8080/users/login`, requestOptions).then(handleResponse);
+  console.log(res);
+  if (!res.success) {
+    throw new Error("Invalid username or password");
   }
-
-  // return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
-  //     .then(handleResponse)
-  //     .then(user => {
-  //         // store user details and jwt token in local storage to keep user logged in between page refreshes
-  //         localStorage.setItem('user', JSON.stringify(user));
-
-  //         return user;
-  //     });
+  window.localStorage.setItem('token', res.user.token);
+  return res.user;
 }
 
-async function register(username, password, email) {
-  if (username === 'bb') {
-    throw new Error("User already exists");
-  } else {
-    return { 'success': true };
+async function register(name, password, email) {
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, password, email })
+  };
+  var res = await fetch(`http://localhost:8080/users/register`, requestOptions).then(handleResponse);
+  if (!res.success) {
+    throw new Error("User already exists!");
   }
+  return true;
+}
+
+function logout() {
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({'token': window.localStorage.getItem('token')})
+  };
+  fetch(`http://localhost:8080/users/logout`, requestOptions);
+}
+
+function handleResponse(response) {
+  return response.text().then(text => {
+      const data = text && JSON.parse(text);
+      return data;
+  });
 }
 
 export const authService = {
   login,
-  register
+  register,
+  logout
 };
